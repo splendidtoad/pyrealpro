@@ -60,22 +60,34 @@ class Measure:
     def __init__(self, chords, time_sig='T44'):
         validate_time_signature(time_sig)
         self.time_sig = time_sig
-        # TODO handling for 'chords' as either string or list
-        # TODO self.chords should be a list
-        # TODO if chords is a list, validate the length of the list against the time signature numerator
+        self.beats = beats(time_sig)
         self.chords = []
-        # TODO support either a single string value (which implies that the chord lasts the full measure)
-        #      OR a list.  If 'chords' is a string, then build self.chords out using that chord plus the rest of the
-        #      measure with spaces per the time signature.  If it's a list, then validate the list length per the time
-        #      signature and assign it to self.chords.
+
+        if type(chords) == str:
+            self.chords.append(chords)
+            for i in range(0, self.beats - 1):
+                self.chords.append(' ')
+        else:
+            if len(chords) != self.beats:
+                raise ValueError("Expected data for {} beats, got {} instead.".format(self.beats, len(chords)))
+            self.chords = chords
+
+    def __str__(self):
+        return "".join(self.chords)
 
 
+def beats(time_sig):
+    """Given a time signature, return the number of beats."""
+    validate_time_signature(time_sig)
 
-
-
+    # "T12" is actually 12/8:
+    if time_sig == "T12":
+        return 12
+    else:
+        return int(list(time_sig)[1])
 
 
 def validate_time_signature(time_sig):
-    """Given a string, test whether it is valid."""
+    """Given a time signature string, test whether it is valid."""
     if time_sig not in Song.TIME_SIGNATURES:
         raise ValueError("'{}' is not a valid time signature.".format(time_sig))
