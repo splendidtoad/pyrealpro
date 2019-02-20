@@ -11,7 +11,19 @@ class Song:
     TIME_SIGNATURES = ['T44', 'T34', 'T24', 'T54', 'T64', 'T74', 'T22', 'T32', 'T58', 'T68', 'T78', 'T98', 'T12']
 
     def __init__(self, **kwargs):
+        """
+        Initialize a new iRealPro Song object.
+        :param kwargs:
+        Required:
+        - title: The Song Title
+        - chord_progression: The song chord progression.
 
+        Optional:
+        - key: The song key signature (defaults to 'C')
+        - composer: The song composer (defaults to 'Unknown')
+        - style: The iRealPro song style (defaults to 'Medium Swing')
+        - time_sig: The song time signature (defaults to 'T44', which is how iRealPro represents 4/4)
+        """
         # Required properties:
         self.title = kwargs['title']
         self.chord_progression = kwargs['chord_progression']
@@ -41,6 +53,9 @@ class Song:
 
     @property
     def url(self):
+        """
+        Render Song as an iRealPro data URL.
+        """
         return quote("irealbook://{}={}={}={}=n={}{}".format(
             self.title,
             self.composer,
@@ -58,6 +73,12 @@ class Measure:
     """Represents a single measure."""
 
     def __init__(self, chords, time_sig='T44'):
+        """
+        Initialize an iRealPro measure.
+        :param chords: A string representing a single chord, or a list of chords. If a list is provided, the list
+                       length must match the number of beats indicated by the time signature.
+        :param time_sig: The measure time signature.
+        """
         validate_time_signature(time_sig)
         self.time_sig = time_sig
         self.beats = beats(time_sig)
