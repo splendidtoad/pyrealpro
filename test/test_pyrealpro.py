@@ -3,7 +3,6 @@ import pyrealpro
 
 TITLE = "A Test Song"
 CHORD_PROGRESSION_STRING = "[C   |x   |F   |G   ]"
-INVALID_TIME_SIGNATURE = 'T45'
 
 
 class TestSongs(unittest.TestCase):
@@ -35,14 +34,8 @@ class TestSongs(unittest.TestCase):
         Test that Songs default to 4/4 time if no time signature is provided.
         """
         s = pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING)
-        self.assertEqual(s.time_sig, 'T44', "Default Time Signature should be 'T44'.")
+        self.assertEqual(s.time_sig.__str__(), 'T44', "Default Time Signature should be 'T44'.")
 
-    def test_invalid_time_signature(self):
-        """
-        Test that an invalid time signature raises a ValueError.
-        """
-        with self.assertRaises(ValueError):
-            pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING, time_sig=INVALID_TIME_SIGNATURE)
 
     def test_default_style(self):
         """
@@ -67,14 +60,7 @@ class TestMeasures(unittest.TestCase):
         Test that a new Measure defaults to 4/4 if no time signature is provided.
         """
         m = pyrealpro.Measure(chords='C')
-        self.assertEqual(m.time_sig, 'T44', "Default time signature should be 'T44'.")
-
-    def test_invalid_measure_time_signature(self):
-        """
-        Test that an invalid Measure key signature raises a ValueError.
-        """
-        with self.assertRaises(ValueError):
-            pyrealpro.Measure(chords='C', time_sig=INVALID_TIME_SIGNATURE)
+        self.assertEqual(m.time_sig.__str__(), 'T44', "Default time signature should be 'T44'.")
 
     def test_chord_length_mismatch(self):
         """
@@ -83,14 +69,14 @@ class TestMeasures(unittest.TestCase):
         """
         with self.assertRaises(ValueError):
             # TODO test with random values
-            pyrealpro.Measure(chords=['C', ' ', ' '], time_sig='T44')
+            pyrealpro.Measure(chords=['C', ' ', ' '], time_sig=pyrealpro.TimeSignature(4, 4))
 
     def test_measure_from_chord_string(self):
         """
         Test that instantiating a measure with a string representing a single chord builds the chords list correctly
         """
         # TODO test multiple time signatures
-        m = pyrealpro.Measure(chords='C', time_sig='T44')
+        m = pyrealpro.Measure(chords='C', time_sig=pyrealpro.TimeSignature(4, 4))
         expected_chords_list = ['C', ' ', ' ', ' ']
         self.assertListEqual(m.chords, expected_chords_list)
 
@@ -99,7 +85,7 @@ class TestMeasures(unittest.TestCase):
         Test that Measure.__str__() returns the expected value when a single chord is provided as a string.
         """
         # TODO test multiple time signatures
-        m = pyrealpro.Measure(chords='C', time_sig='T54')
+        m = pyrealpro.Measure(chords='C', time_sig=pyrealpro.TimeSignature(5, 4))
         expected_measure_string = 'C    '
         self.assertEqual(m.__str__(), expected_measure_string)
 
@@ -107,7 +93,7 @@ class TestMeasures(unittest.TestCase):
         """
         Test that Measure.__str__() returns the expected value when chords are provided as a list.
         """
-        m = pyrealpro.Measure(chords=['C', ' ', 'G7', ' '], time_sig='T44')
+        m = pyrealpro.Measure(chords=['C', ' ', 'G7', ' '], time_sig=pyrealpro.TimeSignature(4, 4))
         expected_measure_string = 'C G7 '
         self.assertEqual(m.__str__(), expected_measure_string)
 
@@ -115,32 +101,33 @@ class TestMeasures(unittest.TestCase):
 class TestTimeSignatures(unittest.TestCase):
     """Tests related to time signature handling."""
 
-    def test_beats(self):
-        """Test that the beats() function returns the expected value."""
-        expected_values = {
-            'T44': 4,
-            'T34': 3,
-            'T24': 2,
-            'T54': 5,
-            'T64': 6,
-            'T74': 7,
-            'T22': 2,
-            'T32': 3,
-            'T58': 5,
-            'T68': 6,
-            'T78': 7,
-            'T98': 9,
-            'T12': 12
-        }
+    def test_expected_ts_str(self):
+        """Test that TimeSignature __str__() returns the expected values."""
 
-        for time_sig, expected_beats in expected_values.items():
-            beats = pyrealpro.beats(time_sig)
-            self.assertEqual(beats, expected_beats)
+        expected_sigs = (
+            (4, 4, 'T44'),
+            (3, 4, 'T34'),
+            (2, 4, 'T24'),
+            (5, 4, 'T54'),
+            (6, 4, 'T64'),
+            (7, 4, 'T74'),
+            (2, 2, 'T22'),
+            (3, 2, 'T32'),
+            (5, 8, 'T58'),
+            (6, 8, 'T68'),
+            (7, 8, 'T78'),
+            (9, 8, 'T98'),
+            (12, 4, 'T12')
+        )
 
-    def test_invalid_beats_arg(self):
+        for beats, duration, expected_str in expected_sigs:
+            ts = pyrealpro.TimeSignature(beats, duration)
+            self.assertEqual(ts.__str__(), expected_str)
+
+    def test_invalid_signature(self):
         """Test that passing an invalid time signature to the beats() function raises a ValueError."""
         with self.assertRaises(ValueError):
-            pyrealpro.beats(INVALID_TIME_SIGNATURE)
+            pyrealpro.TimeSignature(4, 5)
 
 
 if __name__ == '__main__':

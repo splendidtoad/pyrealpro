@@ -8,8 +8,6 @@ class Song:
     KEY_SIGNATURES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'A-', 'Bb-', 'B-', 'C-', 'C#-',
                       'D-', 'Eb-', 'E-', 'F-', 'F#-', 'G-', 'G#-']
 
-    TIME_SIGNATURES = ['T44', 'T34', 'T24', 'T54', 'T64', 'T74', 'T22', 'T32', 'T58', 'T68', 'T78', 'T98', 'T12']
-
     def __init__(self, **kwargs):
         """
         Initialize a new iRealPro Song object.
@@ -22,7 +20,7 @@ class Song:
         - key: The song key signature (defaults to 'C')
         - composer: The song composer (defaults to 'Unknown')
         - style: The iRealPro song style (defaults to 'Medium Swing')
-        - time_sig: The song time signature (defaults to 'T44', which is how iRealPro represents 4/4)
+        - time_sig: A TimeSignature object. (Defaults to 4/4.)
         """
         # Required properties:
         self.title = kwargs['title']
@@ -46,10 +44,9 @@ class Song:
             self.style = 'Medium Swing'
 
         if 'time_sig' in kwargs:
-            validate_time_signature(kwargs['time_sig'])
             self.time_sig = kwargs['time_sig']
         else:
-            self.time_sig = 'T44'
+            self.time_sig = TimeSignature(4, 4)
 
     @property
     def url(self):
@@ -72,43 +69,64 @@ class Song:
 class Measure:
     """Represents a single measure."""
 
-    def __init__(self, chords, time_sig='T44'):
+    def __init__(self, chords, time_sig=None):
         """
         Initialize an iRealPro measure.
         :param chords: A string representing a single chord, or a list of chords. If a list is provided, the list
                        length must match the number of beats indicated by the time signature.
         :param time_sig: The measure time signature.
         """
-        validate_time_signature(time_sig)
+        if not time_sig:
+            time_sig = TimeSignature(4, 4)
         self.time_sig = time_sig
-        self.beats = beats(time_sig)
         self.chords = []
 
         if type(chords) == str:
             self.chords.append(chords)
-            for i in range(0, self.beats - 1):
+            for i in range(0, self.time_sig.beats - 1):
                 self.chords.append(' ')
         else:
-            if len(chords) != self.beats:
-                raise ValueError("Expected data for {} beats, got {} instead.".format(self.beats, len(chords)))
+            if len(chords) != self.time_sig.beats:
+                raise ValueError("Expected data for {} beats, got {} instead.".format(self.time_sig.beats, len(chords)))
             self.chords = chords
 
     def __str__(self):
         return "".join(self.chords)
 
 
-def beats(time_sig):
-    """Given a time signature, return the number of beats."""
-    validate_time_signature(time_sig)
+class TimeSignature:
+    VALID_SIGNATURES = ['T44', 'T34', 'T24', 'T54', 'T64', 'T74', 'T22', 'T32', 'T58', 'T68', 'T78', 'T98', 'T12']
+    beats = 4
+    duration = 4
 
-    # "T12" is actually 12/8:
-    if time_sig == "T12":
-        return 12
-    else:
-        return int(list(time_sig)[1])
+    def __init__(self, beats=None, duration=None):
+        if beats:
+            self.beats = beats
+        if duration:
+            self.duration = duration
+        if self.__str__() not in self.VALID_SIGNATURES:
+            ts_str = self.__str__()
+            raise ValueError(f"{beats}/{duration} may be a valid time signature, but \"{self}\" it is not supported by iRealPro.")
+
+    def __str__(self):
+        if self.beats == 12:  # Special case for 12/4, which iRealPro formats as simply "T12"
+            return "T12"
+        else:
+            return f"T{self.beats}{self.duration}"
+
+#
+# def beats(time_sig):
+#     """Given a time signature, return the number of beats."""
+#     validate_time_signature(time_sig)
+#
+#     # "T12" is actually 12/8:
+#     if time_sig == "T12":
+#         return 12
+#     else:
+#         return int(list(time_sig)[1])
 
 
-def validate_time_signature(time_sig):
-    """Given a time signature string, test whether it is valid."""
-    if time_sig not in Song.TIME_SIGNATURES:
-        raise ValueError("'{}' is not a valid time signature.".format(time_sig))
+# def validate_time_signature(time_sig):
+#     """Given a time signature string, test whether it is valid."""
+#     if time_sig not in Song.TIME_SIGNATURES:
+#         raise ValueError("'{}' is not a valid time signature.".format(time_sig))
