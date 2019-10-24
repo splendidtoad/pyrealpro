@@ -4,32 +4,32 @@ KEY_SIGNATURES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B
                       'D-', 'Eb-', 'E-', 'F-', 'F#-', 'G-', 'G#-']
 
 STYLES_JAZZ = ["Afro 12/8",
-                   "Ballad Double Time Feel",
-                   "Ballad Even",
-                   "Ballad Melodic",
-                   "Ballad Swing",
-                   "Blue Note",
-                   "Bossa Nova",
-                   "Doo Doo Cats",
-                   "Double Time Swing",
-                   "Even 8ths",
-                   "Even 8ths Open",
-                   "Even 16ths",
-                   "Guitar Trio",
-                   "Gypsy Jazz",
-                   "Latin",
-                   "Latin/Swing",
-                   "Long Notes",
-                   "Medium Swing",
-                   "Medium Up Swing",
-                   "Medium Up Swing 2",
-                   "New Orleans Swing",
-                   "Second Line",
-                   "Slow Swing",
-                   "Swing Two/Four",
-                   "Trad Jazz",
-                   "Up Tempo Swing",
-                   "Up Tempo Swing 2", ]
+               "Ballad Double Time Feel",
+               "Ballad Even",
+               "Ballad Melodic",
+               "Ballad Swing",
+               "Blue Note",
+               "Bossa Nova",
+               "Doo Doo Cats",
+               "Double Time Swing",
+               "Even 8ths",
+               "Even 8ths Open",
+               "Even 16ths",
+               "Guitar Trio",
+               "Gypsy Jazz",
+               "Latin",
+               "Latin/Swing",
+               "Long Notes",
+               "Medium Swing",
+               "Medium Up Swing",
+               "Medium Up Swing 2",
+               "New Orleans Swing",
+               "Second Line",
+               "Slow Swing",
+               "Swing Two/Four",
+               "Trad Jazz",
+               "Up Tempo Swing",
+               "Up Tempo Swing 2", ]
 
 STYLES_LATIN = ["Argentina: Tango",
                 "Brazil: Bossa Acoustic",
@@ -56,9 +56,14 @@ STYLES_POP = ["Bluegrass",
               "Soul",
               "Virtual Funk", ]
 
+
 class Song:
     """A lightweight class based on the iReal Pro file format described at
     https://irealpro.com/ireal-pro-file-format/."""
+
+    # TODO handle composer last/first name consistently ("Foo Bar" gets parsed by irealpro as "Bar Foo", apparently "Last First"
+
+    measures = []
 
     def __init__(self, **kwargs):
         """
@@ -66,18 +71,14 @@ class Song:
         :param kwargs:
         Required:
 
-        - chord_progression: The song chord progression.
-
         Optional:
         - title: The Song Title (defaults to 'Untitled')
         - key: The song key signature (defaults to 'C')
         - composer: The song composer (defaults to 'Unknown')
         - style: The iRealPro song style (defaults to 'Medium Swing')
-        - time_sig: A TimeSignature object. (Defaults to 4/4.)
+        - measures: A list of Measure objects.
         """
         # Required properties:
-
-        self.chord_progression = kwargs['chord_progression']
 
         if 'title' in kwargs:
             self.title = kwargs['title']
@@ -104,24 +105,33 @@ class Song:
         else:
             self.style = 'Medium Swing'
 
-        if 'time_sig' in kwargs:
-            self.time_sig = kwargs['time_sig']
-        else:
-            self.time_sig = TimeSignature(4, 4)
+        if 'measures' in kwargs:
+            self.measures.extend(kwargs['measures'])
 
-    @property
-    def url(self):
+    def url(self, urlencode=True):
         """
         Render Song as an iRealPro data URL.
         """
-        return quote("irealbook://{}={}={}={}=n={}{}".format(
-            self.title,
-            self.composer,
-            self.style,
-            self.key,
-            self.time_sig,
-            self.chord_progression
-        ), safe=":/=")
+
+        # If the first measure has no opening barline defined, make it a double barline
+        if self.measures[0].barline_open == "":
+            self.measures[0].barline_open = "["
+
+        # If the last measure has no barline or the default barline, make it a final double barline
+        if self.measures[-1].barline_close in ["", "|", None]:
+            self.measures[-1].barline_close = "Z"
+
+        # If this song has any measures defined, force the first one to render its time signature
+        if len(self.measures) > 0:
+            self.measures[0].render_ts = True
+        measures_str = "".join(m.__str__() for m in self.measures)
+
+        url = f"irealbook://{self.title}={self.composer}={self.style}={self.key}=n={measures_str}"
+
+        if urlencode:
+            return quote(url, safe=":/=")
+        else:
+            return url
 
     def __str__(self):
         return "<{} {}: {}>".format(type(self).__name__, id(self), self.title)
@@ -130,7 +140,43 @@ class Song:
 class Measure:
     """Represents a single measure."""
 
-    def __init__(self, chords, time_sig=None):
+    BARLINES_OPEN = [
+        "[",  # opening double bar line
+        "{",  # opening repeat bar line
+
+    ]
+
+    BARLINES_CLOSE = [
+        "|",  # single bar line
+        "]",  # closing double bar line
+        "}",  # closing repeat bar line
+        "Z",  # Final thick double bar line
+    ]
+
+    REHEARSAL_MARKS = [
+        "*A",  # A section
+        "*B",  # B section
+        "*C",  # C Section
+        "*D",  # D Section
+        "*V",  # Verse
+        "*i",  # Intro
+        "S",  # Segno
+        "Q",  # Coda
+        "f",  # Fermata
+    ]
+
+    ENDINGS = [
+        "N1",  # First ending
+        "N2",  # Second Ending
+        "N3",  # Third Ending
+        "N0",  # No text Ending
+    ]
+
+    render_ts = False
+    barline_open = ""
+    barline_close = ""
+
+    def __init__(self, chords, time_sig=None, rehearsal_marks=[], barline_open="", barline_close="|", ending="", staff_text=""):
         """
         Initialize an iRealPro measure.
         :param chords: A string representing a single chord, or a list of chords. If a list is provided, the list
@@ -141,6 +187,11 @@ class Measure:
             time_sig = TimeSignature(4, 4)
         self.time_sig = time_sig
         self.chords = []
+        self.rehearsal_marks = rehearsal_marks
+        self.barline_open = barline_open
+        self.ending = ending
+        self.barline_close = barline_close
+        self.staff_text = staff_text
 
         if type(chords) == str:
             self.chords.append(chords)
@@ -148,11 +199,20 @@ class Measure:
                 self.chords.append(' ')
         else:
             if len(chords) != self.time_sig.beats:
+                # TODO if beats modulo chords length is zero, then pad them evenly to the expected number of beats
                 raise ValueError("Expected data for {} beats, got {} instead.".format(self.time_sig.beats, len(chords)))
-            self.chords = chords
+            self.chords = [' ' if c is None else c for c in self.chords]  # Replace any instances of `None` with spaces
 
     def __str__(self):
-        return "".join(self.chords)
+        chords_str = "".join(self.chords)
+        if self.render_ts:
+            ts = self.time_sig
+        else:
+            ts = ""
+
+        # TODO check whether staff_text begins and ends with LT;GT brackets and if not, add them
+        # TODO add support for rehearsal marks
+        return f"{ts}{self.staff_text}{self.barline_open}{self.ending}{chords_str}{self.barline_close}"
 
 
 class TimeSignature:
@@ -166,7 +226,7 @@ class TimeSignature:
         if duration:
             self.duration = duration
         if self.__str__() not in self.VALID_SIGNATURES:
-            raise ValueError(f"{beats}/{duration} may be a valid time signature, but \"{self}\" \it is not supported by iRealPro.")
+            raise ValueError(f"{beats}/{duration} may be a valid time signature, but \"{self}\" is not supported by iRealPro.")
 
     def __str__(self):
         if self.beats == 12:  # Special case for 12/4, which iRealPro formats as simply "T12"
