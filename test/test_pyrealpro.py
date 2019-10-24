@@ -8,13 +8,6 @@ CHORD_PROGRESSION_STRING = "[C   |x   |F   |G   ]"
 class TestSongs(unittest.TestCase):
     """Tests related to the Song class."""
 
-    def test_missing_title(self):
-        """
-        Test that instantiating a Song without a title raises a KeyError.
-        """
-        with self.assertRaises(KeyError):
-            pyrealpro.Song(chord_progression=CHORD_PROGRESSION_STRING)
-
     def test_missing_chords(self):
         """
         Test that instantiating a Song without a chord progression raises a KeyError.
@@ -35,7 +28,6 @@ class TestSongs(unittest.TestCase):
         """
         s = pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING)
         self.assertEqual(s.time_sig.__str__(), 'T44', "Default Time Signature should be 'T44'.")
-
 
     def test_default_style(self):
         """

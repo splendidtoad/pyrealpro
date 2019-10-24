@@ -65,18 +65,24 @@ class Song:
         Initialize a new iRealPro Song object.
         :param kwargs:
         Required:
-        - title: The Song Title
+
         - chord_progression: The song chord progression.
 
         Optional:
+        - title: The Song Title (defaults to 'Untitled')
         - key: The song key signature (defaults to 'C')
         - composer: The song composer (defaults to 'Unknown')
         - style: The iRealPro song style (defaults to 'Medium Swing')
         - time_sig: A TimeSignature object. (Defaults to 4/4.)
         """
         # Required properties:
-        self.title = kwargs['title']
+
         self.chord_progression = kwargs['chord_progression']
+
+        if 'title' in kwargs:
+            self.title = kwargs['title']
+        else:
+            self.title = 'Untitled'
 
         if 'key' in kwargs and kwargs['key'] in KEY_SIGNATURES:
             if kwargs['key'] not in KEY_SIGNATURES:
@@ -160,8 +166,7 @@ class TimeSignature:
         if duration:
             self.duration = duration
         if self.__str__() not in self.VALID_SIGNATURES:
-            ts_str = self.__str__()
-            raise ValueError(f"{beats}/{duration} may be a valid time signature, but \"{self}\" it is not supported by iRealPro.")
+            raise ValueError(f"{beats}/{duration} may be a valid time signature, but \"{self}\" \it is not supported by iRealPro.")
 
     def __str__(self):
         if self.beats == 12:  # Special case for 12/4, which iRealPro formats as simply "T12"
