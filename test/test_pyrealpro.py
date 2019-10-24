@@ -44,6 +44,14 @@ class TestSongs(unittest.TestCase):
         s = pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING)
         self.assertEqual(s.style, 'Medium Swing', "Default style should be 'Medium Swing'.")
 
+    def test_invalid_style(self):
+        """
+        Test that attempting to specify an unsupported style raises a ValueError
+        :return:
+        """
+        with self.assertRaises(ValueError):
+            pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING, style="Klezmer")
+
     def test_default_composer(self):
         """
         Test that a Song's composer defaults to 'Unknown' if no style is provided.

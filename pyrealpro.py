@@ -1,12 +1,64 @@
 from urllib.parse import quote
 
+KEY_SIGNATURES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'A-', 'Bb-', 'B-', 'C-', 'C#-',
+                      'D-', 'Eb-', 'E-', 'F-', 'F#-', 'G-', 'G#-']
+
+STYLES_JAZZ = ["Afro 12/8",
+                   "Ballad Double Time Feel",
+                   "Ballad Even",
+                   "Ballad Melodic",
+                   "Ballad Swing",
+                   "Blue Note",
+                   "Bossa Nova",
+                   "Doo Doo Cats",
+                   "Double Time Swing",
+                   "Even 8ths",
+                   "Even 8ths Open",
+                   "Even 16ths",
+                   "Guitar Trio",
+                   "Gypsy Jazz",
+                   "Latin",
+                   "Latin/Swing",
+                   "Long Notes",
+                   "Medium Swing",
+                   "Medium Up Swing",
+                   "Medium Up Swing 2",
+                   "New Orleans Swing",
+                   "Second Line",
+                   "Slow Swing",
+                   "Swing Two/Four",
+                   "Trad Jazz",
+                   "Up Tempo Swing",
+                   "Up Tempo Swing 2", ]
+
+STYLES_LATIN = ["Argentina: Tango",
+                "Brazil: Bossa Acoustic",
+                "Brazil: Bossa Electric",
+                "Brazil: Samba",
+                "Cuba: Bolero",
+                "Cuba: Cha Cha Cha",
+                "Cuba: Son Montuno 2-3",
+                "Cuba: Son Montuno 3-2", ]
+
+STYLES_POP = ["Bluegrass",
+              "Country",
+              "Disco",
+              "Funk",
+              "Glam Funk",
+              "House",
+              "Reggae",
+              "Rock",
+              "Rock 12/8",
+              "RnB",
+              "Shuffle",
+              "Slow Rock",
+              "Smooth",
+              "Soul",
+              "Virtual Funk", ]
 
 class Song:
     """A lightweight class based on the iReal Pro file format described at
     https://irealpro.com/ireal-pro-file-format/."""
-
-    KEY_SIGNATURES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'A-', 'Bb-', 'B-', 'C-', 'C#-',
-                      'D-', 'Eb-', 'E-', 'F-', 'F#-', 'G-', 'G#-']
 
     def __init__(self, **kwargs):
         """
@@ -26,8 +78,8 @@ class Song:
         self.title = kwargs['title']
         self.chord_progression = kwargs['chord_progression']
 
-        if 'key' in kwargs and kwargs['key'] in Song.KEY_SIGNATURES:
-            if kwargs['key'] not in Song.KEY_SIGNATURES:
+        if 'key' in kwargs and kwargs['key'] in KEY_SIGNATURES:
+            if kwargs['key'] not in KEY_SIGNATURES:
                 raise ValueError("'{}' is not a valid key signature.".format(kwargs['key']))
             self.key = kwargs['key']
         else:
@@ -39,7 +91,10 @@ class Song:
             self.composer = "Unknown"
 
         if 'style' in kwargs:
-            self.style = kwargs['style']
+            if kwargs['style'] in STYLES_JAZZ + STYLES_LATIN + STYLES_POP:
+                self.style = kwargs['style']
+            else:
+                raise ValueError(f"{kwargs['style']} is not a valid iRealPro style.")
         else:
             self.style = 'Medium Swing'
 
@@ -113,20 +168,3 @@ class TimeSignature:
             return "T12"
         else:
             return f"T{self.beats}{self.duration}"
-
-#
-# def beats(time_sig):
-#     """Given a time signature, return the number of beats."""
-#     validate_time_signature(time_sig)
-#
-#     # "T12" is actually 12/8:
-#     if time_sig == "T12":
-#         return 12
-#     else:
-#         return int(list(time_sig)[1])
-
-
-# def validate_time_signature(time_sig):
-#     """Given a time signature string, test whether it is valid."""
-#     if time_sig not in Song.TIME_SIGNATURES:
-#         raise ValueError("'{}' is not a valid time signature.".format(time_sig))
