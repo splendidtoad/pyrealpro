@@ -2,8 +2,6 @@ import unittest
 import pyrealpro
 
 TITLE = "A Test Song"
-CHORD_PROGRESSION_STRING = "[C   |x   |F   |G   ]"
-
 
 class TestSongs(unittest.TestCase):
     """Tests related to the Song class."""
@@ -25,16 +23,22 @@ class TestSongs(unittest.TestCase):
     def test_invalid_style(self):
         """
         Test that attempting to specify an unsupported style raises a ValueError
-        :return:
         """
         with self.assertRaises(ValueError):
             pyrealpro.Song(title=TITLE, style="Klezmer")
+
+    def test_default_title(self):
+        """
+        Test that a Song's title defaults to 'Untitled' if none is provided.
+        """
+        s = pyrealpro.Song()
+        self.assertEqual(s.title, 'Untitled', "Default title should be 'Untitled'.")
 
     def test_default_composer(self):
         """
         Test that a Song's composer defaults to 'Unknown' if no style is provided.
         """
-        s = pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING)
+        s = pyrealpro.Song(title=TITLE)
         self.assertEqual(s.composer, 'Unknown', "Default composer should be 'Unknown'.")
 
 
