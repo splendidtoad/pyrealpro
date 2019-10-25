@@ -172,9 +172,14 @@ class Measure:
         "N0",  # No text Ending
     ]
 
+    chords = None
+    time_sig = None
+    rehearsal_marks = None
     render_ts = False
     barline_open = ""
     barline_close = ""
+    ending = ""
+    staff_text = ""
 
     def __init__(self, chords, time_sig=None, rehearsal_marks=[], barline_open="", barline_close="|", ending="", staff_text=""):
         """
@@ -186,7 +191,6 @@ class Measure:
         if not time_sig:
             time_sig = TimeSignature(4, 4)
         self.time_sig = time_sig
-        self.chords = []
         self.rehearsal_marks = rehearsal_marks
         self.barline_open = barline_open
         self.ending = ending
@@ -194,14 +198,22 @@ class Measure:
         self.staff_text = staff_text
 
         if type(chords) == str:
-            self.chords.append(chords)
+            self.chords = [chords]
             for i in range(0, self.time_sig.beats - 1):
                 self.chords.append(' ')
+        elif len(chords) == self.time_sig.beats:
+            # Replace any instances of `None` with spaces
+            self.chords = [' ' if c is None else c for c in chords]
+        elif self.time_sig.beats % len(chords) == 0:
+            # If beats modulo chords length is zero, then spread them out evenly to fill the measure
+            pad = int((self.time_sig.beats - len(chords)) / len(chords))
+            self.chords = []
+            for chord in chords:
+                self.chords.append(chord)
+                for i in range(0, pad):
+                    self.chords.append(' ')
         else:
-            if len(chords) != self.time_sig.beats:
-                # TODO if beats modulo chords length is zero, then pad them evenly to the expected number of beats
-                raise ValueError("Expected data for {} beats, got {} instead.".format(self.time_sig.beats, len(chords)))
-            self.chords = [' ' if c is None else c for c in self.chords]  # Replace any instances of `None` with spaces
+            raise ValueError("Expected data for {} beats, got {} instead.".format(self.time_sig.beats, len(chords)))
 
     def __str__(self):
         chords_str = "".join(self.chords)

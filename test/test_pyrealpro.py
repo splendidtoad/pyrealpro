@@ -8,32 +8,18 @@ CHORD_PROGRESSION_STRING = "[C   |x   |F   |G   ]"
 class TestSongs(unittest.TestCase):
     """Tests related to the Song class."""
 
-    def test_missing_chords(self):
-        """
-        Test that instantiating a Song without a chord progression raises a KeyError.
-        """
-        with self.assertRaises(KeyError):
-            pyrealpro.Song(title=TITLE)
-
     def test_default_key_signature(self):
         """
         Test that Songs default to the key of C if no key is provided.
         """
-        s = pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING)
+        s = pyrealpro.Song(title=TITLE)
         self.assertEqual(s.key, "C", "Default Key Signature should be 'C'.")
-
-    def test_default_time_signature(self):
-        """
-        Test that Songs default to 4/4 time if no time signature is provided.
-        """
-        s = pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING)
-        self.assertEqual(s.time_sig.__str__(), 'T44', "Default Time Signature should be 'T44'.")
 
     def test_default_style(self):
         """
         Test that a Song's style defaults to 'Medium Swing' if no style is provided.
         """
-        s = pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING)
+        s = pyrealpro.Song(title=TITLE)
         self.assertEqual(s.style, 'Medium Swing', "Default style should be 'Medium Swing'.")
 
     def test_invalid_style(self):
@@ -42,7 +28,7 @@ class TestSongs(unittest.TestCase):
         :return:
         """
         with self.assertRaises(ValueError):
-            pyrealpro.Song(title=TITLE, chord_progression=CHORD_PROGRESSION_STRING, style="Klezmer")
+            pyrealpro.Song(title=TITLE, style="Klezmer")
 
     def test_default_composer(self):
         """
@@ -86,16 +72,29 @@ class TestMeasures(unittest.TestCase):
         """
         # TODO test multiple time signatures
         m = pyrealpro.Measure(chords='C', time_sig=pyrealpro.TimeSignature(5, 4))
-        expected_measure_string = 'C    '
+        expected_measure_string = 'C    |'
         self.assertEqual(m.__str__(), expected_measure_string)
 
     def test_measure_string_from_chords_list(self):
         """
         Test that Measure.__str__() returns the expected value when chords are provided as a list.
         """
-        m = pyrealpro.Measure(chords=['C', ' ', 'G7', ' '], time_sig=pyrealpro.TimeSignature(4, 4))
-        expected_measure_string = 'C G7 '
+        m = pyrealpro.Measure(chords=['C', None, 'G7', None], time_sig=pyrealpro.TimeSignature(4, 4))
+        expected_measure_string = 'C G7 |'
         self.assertEqual(m.__str__(), expected_measure_string)
+
+    def test_modulo_chord_padding(self):
+        """
+        Test that passing a list of chords that is smaller than the number of beats in the time signature returns a
+        an evenly padded string if the number of beats is evenly divisible by the number of chords
+        """
+        chords = ['C', 'F']
+        m = pyrealpro.Measure(chords=chords, time_sig=pyrealpro.TimeSignature(4, 4))
+        self.assertEqual(m.__str__(), 'C F |')
+        m = pyrealpro.Measure(chords=chords, time_sig=pyrealpro.TimeSignature(6, 4))
+        self.assertEqual(m.__str__(), 'C  F  |')
+        m = pyrealpro.Measure(chords=['C', 'F', 'G'], time_sig=pyrealpro.TimeSignature(6, 4))
+        self.assertEqual(m.__str__(), 'C F G |')
 
 
 class TestTimeSignatures(unittest.TestCase):
