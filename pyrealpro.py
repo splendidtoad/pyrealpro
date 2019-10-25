@@ -63,7 +63,7 @@ class Song:
 
     # TODO handle composer last/first name consistently ("Foo Bar" gets parsed by irealpro as "Bar Foo", apparently "Last First"
 
-    measures = []
+    measures = None
 
     def __init__(self, **kwargs):
         """
@@ -106,25 +106,25 @@ class Song:
             self.style = 'Medium Swing'
 
         if 'measures' in kwargs:
-            self.measures.extend(kwargs['measures'])
+            self.measures = kwargs['measures']
 
     def url(self, urlencode=True):
         """
         Render Song as an iRealPro data URL.
         """
-
         # If the first measure has no opening barline defined, make it a double barline
         if self.measures[0].barline_open == "":
             self.measures[0].barline_open = "["
-
         # If the last measure has no barline or the default barline, make it a final double barline
         if self.measures[-1].barline_close in ["", "|", None]:
             self.measures[-1].barline_close = "Z"
-
         # If this song has any measures defined, force the first one to render its time signature
         if len(self.measures) > 0:
             self.measures[0].render_ts = True
-        measures_str = "".join(m.__str__() for m in self.measures)
+        if self.measures is not None:
+            measures_str = "".join(m.__str__() for m in self.measures)
+        else:
+            measures_str = ""
 
         url = f"irealbook://{self.title}={self.composer}={self.style}={self.key}=n={measures_str}"
 
@@ -181,7 +181,7 @@ class Measure:
     ending = ""
     staff_text = ""
 
-    def __init__(self, chords, time_sig=None, rehearsal_marks=[], barline_open="", barline_close="|", ending="", staff_text=""):
+    def __init__(self, chords, time_sig=None, rehearsal_marks=[], barline_open=None, barline_close=None, ending="", staff_text=""):
         """
         Initialize an iRealPro measure.
         :param chords: A string representing a single chord, or a list of chords. If a list is provided, the list
@@ -192,8 +192,13 @@ class Measure:
             time_sig = TimeSignature(4, 4)
         self.time_sig = time_sig
         self.rehearsal_marks = rehearsal_marks
+        if barline_open is None:
+            barline_open = ""
         self.barline_open = barline_open
         self.ending = ending
+        # Measure should always have an ending barline
+        if barline_close is None or barline_close == "":
+            barline_close = "|"
         self.barline_close = barline_close
         self.staff_text = staff_text
 
@@ -221,10 +226,12 @@ class Measure:
             ts = self.time_sig
         else:
             ts = ""
-
-        # TODO check whether staff_text begins and ends with LT;GT brackets and if not, add them
+        if self.staff_text != "":
+            staff_text = f"<{self.staff_text}>"
+        else:
+            staff_text = ""
         # TODO add support for rehearsal marks
-        return f"{ts}{self.staff_text}{self.barline_open}{self.ending}{chords_str}{self.barline_close}"
+        return f"{self.barline_open}{ts}{staff_text}{self.ending}{chords_str}{self.barline_close}"
 
 
 class TimeSignature:

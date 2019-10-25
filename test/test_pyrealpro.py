@@ -1,7 +1,10 @@
 import unittest
-import pyrealpro
+
+from pyrealpro import *
 
 TITLE = "A Test Song"
+COMPOSER = 'Jackson Arthur Two-Sheds'
+
 
 class TestSongs(unittest.TestCase):
     """Tests related to the Song class."""
@@ -10,14 +13,14 @@ class TestSongs(unittest.TestCase):
         """
         Test that Songs default to the key of C if no key is provided.
         """
-        s = pyrealpro.Song(title=TITLE)
+        s = Song(title=TITLE)
         self.assertEqual(s.key, "C", "Default Key Signature should be 'C'.")
 
     def test_default_style(self):
         """
         Test that a Song's style defaults to 'Medium Swing' if no style is provided.
         """
-        s = pyrealpro.Song(title=TITLE)
+        s = Song(title=TITLE)
         self.assertEqual(s.style, 'Medium Swing', "Default style should be 'Medium Swing'.")
 
     def test_invalid_style(self):
@@ -25,21 +28,42 @@ class TestSongs(unittest.TestCase):
         Test that attempting to specify an unsupported style raises a ValueError
         """
         with self.assertRaises(ValueError):
-            pyrealpro.Song(title=TITLE, style="Klezmer")
+            Song(title=TITLE, style="Klezmer")
 
     def test_default_title(self):
         """
         Test that a Song's title defaults to 'Untitled' if none is provided.
         """
-        s = pyrealpro.Song()
+        s = Song()
         self.assertEqual(s.title, 'Untitled', "Default title should be 'Untitled'.")
 
     def test_default_composer(self):
         """
         Test that a Song's composer defaults to 'Unknown' if no style is provided.
         """
-        s = pyrealpro.Song(title=TITLE)
+        s = Song(title=TITLE)
         self.assertEqual(s.composer, 'Unknown', "Default composer should be 'Unknown'.")
+
+    def test_barline_and_ts_behavior(self):
+        """
+        Tests that the time signature of the first measure is always rendered, that the barline of the first measure is
+        set to a double line, and that the barline of the last measure
+        is always set to the final double bar (unless they are repeat brackets.)
+        """
+        m1 = Measure(chords='C')
+        m2 = Measure(chords='G')
+        s = Song(title=TITLE,  composer=COMPOSER, measures=[m1, m2])
+        self.assertEqual(s.url(urlencode=False),
+                         'irealbook://A Test Song=Jackson Arthur Two-Sheds=Medium Swing=C=n=[T44C   |G   Z')
+        m3 = Measure(chords='A', barline_open='{', time_sig=TimeSignature(3, 4))
+        m4 = Measure(chords='D', barline_close='}', time_sig=TimeSignature(3, 4))
+        s2 = Song(title=TITLE,  composer=COMPOSER, measures=[m3, m4])
+
+        self.assertEqual(s2.url(urlencode=False),
+                         'irealbook://A Test Song=Jackson Arthur Two-Sheds=Medium Swing=C=n={T34A  |D  }')
+
+    # TODO: test expected measure strings
+    # TODO: test expected song URL
 
 
 class TestMeasures(unittest.TestCase):
@@ -49,7 +73,7 @@ class TestMeasures(unittest.TestCase):
         """
         Test that a new Measure defaults to 4/4 if no time signature is provided.
         """
-        m = pyrealpro.Measure(chords='C')
+        m = Measure(chords='C')
         self.assertEqual(m.time_sig.__str__(), 'T44', "Default time signature should be 'T44'.")
 
     def test_chord_length_mismatch(self):
@@ -59,14 +83,14 @@ class TestMeasures(unittest.TestCase):
         """
         with self.assertRaises(ValueError):
             # TODO test with random values
-            pyrealpro.Measure(chords=['C', ' ', ' '], time_sig=pyrealpro.TimeSignature(4, 4))
+            Measure(chords=['C', ' ', ' '], time_sig=TimeSignature(4, 4))
 
     def test_measure_from_chord_string(self):
         """
         Test that instantiating a measure with a string representing a single chord builds the chords list correctly
         """
         # TODO test multiple time signatures
-        m = pyrealpro.Measure(chords='C', time_sig=pyrealpro.TimeSignature(4, 4))
+        m = Measure(chords='C', time_sig=TimeSignature(4, 4))
         expected_chords_list = ['C', ' ', ' ', ' ']
         self.assertListEqual(m.chords, expected_chords_list)
 
@@ -75,7 +99,7 @@ class TestMeasures(unittest.TestCase):
         Test that Measure.__str__() returns the expected value when a single chord is provided as a string.
         """
         # TODO test multiple time signatures
-        m = pyrealpro.Measure(chords='C', time_sig=pyrealpro.TimeSignature(5, 4))
+        m = Measure(chords='C', time_sig=TimeSignature(5, 4))
         expected_measure_string = 'C    |'
         self.assertEqual(m.__str__(), expected_measure_string)
 
@@ -83,7 +107,7 @@ class TestMeasures(unittest.TestCase):
         """
         Test that Measure.__str__() returns the expected value when chords are provided as a list.
         """
-        m = pyrealpro.Measure(chords=['C', None, 'G7', None], time_sig=pyrealpro.TimeSignature(4, 4))
+        m = Measure(chords=['C', None, 'G7', None], time_sig=TimeSignature(4, 4))
         expected_measure_string = 'C G7 |'
         self.assertEqual(m.__str__(), expected_measure_string)
 
@@ -93,12 +117,51 @@ class TestMeasures(unittest.TestCase):
         an evenly padded string if the number of beats is evenly divisible by the number of chords
         """
         chords = ['C', 'F']
-        m = pyrealpro.Measure(chords=chords, time_sig=pyrealpro.TimeSignature(4, 4))
+        m = Measure(chords=chords, time_sig=TimeSignature(4, 4))
         self.assertEqual(m.__str__(), 'C F |')
-        m = pyrealpro.Measure(chords=chords, time_sig=pyrealpro.TimeSignature(6, 4))
+        m = Measure(chords=chords, time_sig=TimeSignature(6, 4))
         self.assertEqual(m.__str__(), 'C  F  |')
-        m = pyrealpro.Measure(chords=['C', 'F', 'G'], time_sig=pyrealpro.TimeSignature(6, 4))
+        m = Measure(chords=['C', 'F', 'G'], time_sig=TimeSignature(6, 4))
         self.assertEqual(m.__str__(), 'C F G |')
+
+    def test_staff_text(self):
+        """
+        Test that staff text is formatted correctly and in the expected position
+        """
+        m = Measure(chords='C', time_sig=TimeSignature(4, 4), staff_text="Test")
+        self.assertEqual(m.__str__(), '<Test>C   |')
+        m = Measure(chords=['C', 'F'], time_sig=TimeSignature(4, 4), staff_text='Test',
+                              barline_open='{', barline_close='}')
+        self.assertEqual(m.__str__(), '{<Test>C F }')
+        m.render_ts = True
+        self.assertEqual(m.__str__(), '{T44<Test>C F }')
+
+    def test_barline_open(self):
+        """
+        Test opening barline options
+        """
+        m = Measure(chords='C', barline_open="")
+        self.assertEqual(m.__str__(), 'C   |')
+        m2 = Measure(chords='C', barline_open='[')
+        self.assertEqual(m2.__str__(), '[C   |')
+        m3 = Measure(chords='C', barline_open='{')
+        m3.render_ts = True
+        self.assertEqual(m3.__str__(), '{T44C   |')
+
+    def test_barline_close(self):
+        """
+        Test closing barline options
+        """
+        m = Measure(chords='C', barline_close=None)
+        self.assertEqual(m.__str__(), 'C   |')
+        m = Measure(chords='C', barline_close='')
+        self.assertEqual(m.__str__(), 'C   |')
+        m2 = Measure(chords='C', barline_close=']')
+        self.assertEqual(m2.__str__(), 'C   ]')
+        m3 = Measure(chords='C', barline_close='}')
+        self.assertEqual(m3.__str__(), 'C   }')
+        m4 = Measure(chords='C', barline_close='Z')
+        self.assertEqual(m4.__str__(), 'C   Z')
 
 
 class TestTimeSignatures(unittest.TestCase):
@@ -124,13 +187,13 @@ class TestTimeSignatures(unittest.TestCase):
         )
 
         for beats, duration, expected_str in expected_sigs:
-            ts = pyrealpro.TimeSignature(beats, duration)
+            ts = TimeSignature(beats, duration)
             self.assertEqual(ts.__str__(), expected_str)
 
     def test_invalid_signature(self):
         """Test that passing an invalid time signature to the beats() function raises a ValueError."""
         with self.assertRaises(ValueError):
-            pyrealpro.TimeSignature(4, 5)
+            TimeSignature(4, 5)
 
 
 if __name__ == '__main__':
