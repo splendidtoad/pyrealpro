@@ -216,17 +216,19 @@ class Measure:
 
 
 class TimeSignature:
-    VALID_SIGNATURES = ['T44', 'T34', 'T24', 'T54', 'T64', 'T74', 'T22', 'T32', 'T58', 'T68', 'T78', 'T98', 'T12']
-    beats = 4
-    duration = 4
+    VALID_TIME_SIGNATURES = ['T44', 'T34', 'T24', 'T54', 'T64', 'T74', 'T22', 'T32', 'T58', 'T68', 'T78', 'T98', 'T12']
+    beats = None
+    duration = None
 
-    def __init__(self, beats=None, duration=None):
+    def __init__(self, beats=4, duration=4):
         if beats:
             self.beats = beats
         if duration:
             self.duration = duration
-        if self.__str__() not in self.VALID_SIGNATURES:
-            raise ValueError(f"{beats}/{duration} may be a valid time signature, but \"{self}\" is not supported by iRealPro.")
+        if self.__str__() not in self.VALID_TIME_SIGNATURES:
+            raise ValueError(
+                f"{beats}/{duration} may be a valid time signature, but \"{self}\" is not supported by iRealPro."
+            )
 
     def __str__(self):
         if self.beats == 12:  # Special case for 12/4, which iRealPro formats as simply "T12"
