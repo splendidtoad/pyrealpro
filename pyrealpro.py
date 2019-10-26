@@ -7,9 +7,8 @@ https://irealpro.com/ireal-pro-file-format/, but hopefully makes it easier to pr
 song than resorting to brute-force string concatenation.
 """
 
-
 KEY_SIGNATURES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'A-', 'Bb-', 'B-', 'C-', 'C#-',
-                      'D-', 'Eb-', 'E-', 'F-', 'F#-', 'G-', 'G#-']
+                  'D-', 'Eb-', 'E-', 'F-', 'F#-', 'G-', 'G#-']
 
 STYLES_JAZZ = ["Afro 12/8",
                "Ballad Double Time Feel",
@@ -68,21 +67,23 @@ STYLES_ALL = STYLES_JAZZ + STYLES_LATIN + STYLES_POP
 
 
 class Song:
-    """A lightweight class based on the iReal Pro file format described at
-    https://irealpro.com/ireal-pro-file-format/."""
+    """
+    A class for building fake-book style chord charts that can be imported into iRealPro. Implements the iRealPro
+    data format as described at https://irealpro.com/ireal-pro-file-format/.
+    """
 
     measures = None
 
     def __init__(self, **kwargs):
         """
-        Initialize a new iRealPro Song object.
+        Initializes a new Song object.
 
-        :param title: The title of the song.  Defaults to "Unknown".
-        :param key: The key signature of the song. Should be a value found in KEY_SIGNATURES.
-        :param composer_name_first: The composer's first name. Defaults to "Unknown".
-        :param composer_name_last: The composer's last name.  Defaults to "Unknown".
-        :param style: The song style.  Must be a value found in STYLES_ALL. Defaults to "Medium Swing".
-        :param measures: A list containing one or more Measure objects. If omitted, it will be initialized as an empty
+        :param title: (str) The title of the song.  Defaults to "Unknown".
+        :param key: (str) The key signature of the song. Should be a value found in KEY_SIGNATURES.
+        :param composer_name_first: (str) The composer's first name. Defaults to "Unknown".
+        :param composer_name_last: (str) The composer's last name.  Defaults to "Unknown".
+        :param style: (str) The song style. Must be a value found in STYLES_ALL. Defaults to "Medium Swing".
+        :param measures: (list) A list containing one or more Measure objects. If omitted, it will be initialized as an empty
                          list that can be appended to later.
         """
         # Required properties:
@@ -134,7 +135,7 @@ class Song:
 
     def url(self, urlencode=True):
         """
-        Render Song as an iRealPro data URL.
+        Renders Song as an iRealPro data URL.
 
         :param urlencode: (bool), optional
                                   Indicates whether or not the result should be URL-encoded.
@@ -212,7 +213,7 @@ class Measure:
     def __init__(self, chords, time_sig=None, rehearsal_marks=[], barline_open="", barline_close=None, ending="",
                  staff_text="", render_ts=False):
         """
-        Initialize an iRealPro measure.
+        Initializes a Measure object.
 
         :param chords: Union([str, list]) A string representing a single chord, or a list of chords. If a list is
                                           provided, the list length must either match the number of beats indicated
@@ -296,13 +297,17 @@ class Measure:
 
 
 class TimeSignature:
+    """
+    Represents a musical time signature.
+    """
     VALID_TIME_SIGNATURES = ['T44', 'T34', 'T24', 'T54', 'T64', 'T74', 'T22', 'T32', 'T58', 'T68', 'T78', 'T98', 'T12']
     beats = None
     duration = None
 
     def __init__(self, beats=4, duration=4):
         """
-        Initialize a TimeSignature object.
+        Initializes a TimeSignature object.
+
         :param beats: (int) The number of beats per measure.
         :param duration: (int) The duration per beat.
         """
