@@ -21,6 +21,5 @@ setuptools.setup(
         "Topic :: Multimedia :: Sound/Audio",
         "Topic :: Software Development :: Libraries"
     ],
-    data_files=[("", ["LICENSE.txt"])],
     python_requires='>=3.6',
 )
