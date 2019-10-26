@@ -227,6 +227,8 @@ class Measure:
             self.rehearsal_marks = [rehearsal_marks]
         else:
             self.rehearsal_marks = rehearsal_marks
+        if not all(x in self.REHEARSAL_MARKS for x in self.rehearsal_marks):
+            raise ValueError("Found one or more unrecognized rehearsal marks.")
 
     def __str__(self):
         chords_str = "".join(self.chords)
@@ -238,8 +240,11 @@ class Measure:
             staff_text = f"<{self.staff_text}>"
         else:
             staff_text = ""
-        # TODO add support for rehearsal marks
-        return f"{self.barline_open}{ts}{staff_text}{self.ending}{chords_str}{self.barline_close}"
+        # Coda and Fermata go at the end of the measure, all others go at the start
+        rehearsal_marks_start = "".join([x for x in self.rehearsal_marks if x[0] not in ['Q', 'f']])
+        rehearsal_marks_end = "".join([x for x in self.rehearsal_marks if x[0] in ['Q', 'f']])
+
+        return f"{rehearsal_marks_start}{self.barline_open}{ts}{staff_text}{self.ending}{chords_str}{rehearsal_marks_end}{self.barline_close}"
 
 
 class TimeSignature:

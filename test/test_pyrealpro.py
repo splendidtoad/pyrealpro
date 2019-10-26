@@ -171,6 +171,17 @@ class TestMeasures(unittest.TestCase):
         m1 = Measure(chords=['C', 'G7'], ending="N2", barline_close='}', render_ts=True)
         self.assertEqual(m1.__str__(), 'T44N2C G7 }')
 
+    def test_rehearsal_marks(self):
+        """
+        Test behavior of the rehearsal_marks property
+        """
+        m = Measure(chords='C', rehearsal_marks="*A", barline_open="[", render_ts=True)
+        self.assertEqual(m.__str__(), '*A[T44C   |')
+        m1 = Measure(chords=['G', 'C7'], rehearsal_marks=['*B', 'Q'])
+        self.assertEqual(m1.__str__(), '*BG C7 Q|')
+        with self.assertRaises(ValueError):
+            Measure(chords='G', rehearsal_marks=['M'])
+
 
 class TestTimeSignatures(unittest.TestCase):
     """Tests related to time signature handling."""
