@@ -178,19 +178,20 @@ class Measure:
     time_sig = None
     rehearsal_marks = None
     render_ts = False
-    barline_open = ""
-    barline_close = ""
-    ending = ""
-    staff_text = ""
+    barline_open = None
+    barline_close = None
+    ending = None
+    staff_text = None
 
-    def __init__(self, chords, time_sig=None, rehearsal_marks=[], barline_open=None, barline_close=None, ending="", staff_text=""):
+    def __init__(self, chords, time_sig=None, rehearsal_marks=[], barline_open="", barline_close=None, ending="",
+                 staff_text="", render_ts=False):
         """
         Initialize an iRealPro measure.
         :param chords: A string representing a single chord, or a list of chords. If a list is provided, the list
                        length must match the number of beats indicated by the time signature.
         :param time_sig: The measure time signature.
         """
-        if not time_sig:
+        if time_sig is None:
             time_sig = TimeSignature(4, 4)
         self.time_sig = time_sig
         self.rehearsal_marks = rehearsal_marks
@@ -203,7 +204,8 @@ class Measure:
             barline_close = "|"
         self.barline_close = barline_close
         self.staff_text = staff_text
-
+        self.ending = ending
+        self.render_ts = render_ts
         if type(chords) == str:
             self.chords = [chords]
             for i in range(0, self.time_sig.beats - 1):
@@ -221,6 +223,10 @@ class Measure:
                     self.chords.append(' ')
         else:
             raise ValueError("Expected data for {} beats, got {} instead.".format(self.time_sig.beats, len(chords)))
+        if type(rehearsal_marks) == str:
+            self.rehearsal_marks = [rehearsal_marks]
+        else:
+            self.rehearsal_marks = rehearsal_marks
 
     def __str__(self):
         chords_str = "".join(self.chords)

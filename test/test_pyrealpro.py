@@ -62,7 +62,6 @@ class TestSongs(unittest.TestCase):
         self.assertEqual(s2.url(urlencode=False),
                          'irealbook://A Test Song=Jackson Arthur Two-Sheds=Medium Swing=C=n={T34A  |D  }')
 
-    # TODO: test expected measure strings
     # TODO: test expected song URL
 
 
@@ -162,6 +161,15 @@ class TestMeasures(unittest.TestCase):
         self.assertEqual(m3.__str__(), 'C   }')
         m4 = Measure(chords='C', barline_close='Z')
         self.assertEqual(m4.__str__(), 'C   Z')
+
+    def test_repeats(self):
+        """
+        Test output of repeats
+        """
+        m = Measure(chords='C', ending='N1', barline_close='}')
+        self.assertEqual(m.__str__(), 'N1C   }')
+        m1 = Measure(chords=['C', 'G7'], ending="N2", barline_close='}', render_ts=True)
+        self.assertEqual(m1.__str__(), 'T44N2C G7 }')
 
 
 class TestTimeSignatures(unittest.TestCase):
