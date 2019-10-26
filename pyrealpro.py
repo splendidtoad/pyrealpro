@@ -63,22 +63,11 @@ class Song:
     """A lightweight class based on the iReal Pro file format described at
     https://irealpro.com/ireal-pro-file-format/."""
 
-    # TODO handle composer last/first name consistently ("Foo Bar" gets parsed by irealpro as "Bar Foo", apparently "Last First"
-
     measures = None
 
     def __init__(self, **kwargs):
         """
         Initialize a new iRealPro Song object.
-        :param kwargs:
-        Required:
-
-        Optional:
-        - title: The Song Title (defaults to 'Untitled')
-        - key: The song key signature (defaults to 'C')
-        - composer: The song composer (defaults to 'Unknown')
-        - style: The iRealPro song style (defaults to 'Medium Swing')
-        - measures: A list of Measure objects.
         """
         # Required properties:
 
@@ -94,10 +83,15 @@ class Song:
         else:
             self.key = 'C'
 
-        if 'composer' in kwargs:
-            self.composer = kwargs['composer']
+        if 'composer_name_first' in kwargs:
+            self.composer_name_first = kwargs['composer_name_first']
         else:
-            self.composer = "Unknown"
+            self.composer_name_first = "Unknown"
+
+        if 'composer_name_last' in kwargs:
+            self.composer_name_last = kwargs['composer_name_last']
+        else:
+            self.composer_name_last = "Unknown"
 
         if 'style' in kwargs:
             if kwargs['style'] in STYLES_ALL:
@@ -111,6 +105,13 @@ class Song:
             self.measures = kwargs['measures']
         else:
             self.measures = []
+
+    @property
+    def composer_name(self):
+        if self.composer_name_first == 'Unknown' and self.composer_name_last == 'Unknown':
+            return 'Unknown'
+        else:
+            return f"{self.composer_name_last} {self.composer_name_first}"
 
     def url(self, urlencode=True):
         """
@@ -130,7 +131,7 @@ class Song:
         else:
             measures_str = ""
 
-        url = f"irealbook://{self.title}={self.composer}={self.style}={self.key}=n={measures_str}"
+        url = f"irealbook://{self.title}={self.composer_name}={self.style}={self.key}=n={measures_str}"
 
         if urlencode:
             return quote(url, safe=":/=")

@@ -3,7 +3,8 @@ import unittest
 from pyrealpro import *
 
 TITLE = "A Test Song"
-COMPOSER = 'Jackson Arthur Two-Sheds'
+COMPOSER_NAME_FIRST = 'Arthur "Two-Sheds"'
+COMPOSER_NAME_LAST = "Jackson"
 
 
 class TestSongs(unittest.TestCase):
@@ -42,7 +43,7 @@ class TestSongs(unittest.TestCase):
         Test that a Song's composer defaults to 'Unknown' if no style is provided.
         """
         s = Song(title=TITLE)
-        self.assertEqual(s.composer, 'Unknown', "Default composer should be 'Unknown'.")
+        self.assertEqual(s.composer_name, 'Unknown', "Default composer_name should be 'Unknown'.")
 
     def test_barline_and_ts_behavior(self):
         """
@@ -52,15 +53,15 @@ class TestSongs(unittest.TestCase):
         """
         m1 = Measure(chords='C')
         m2 = Measure(chords='G')
-        s = Song(title=TITLE,  composer=COMPOSER, measures=[m1, m2])
+        s = Song(title=TITLE, composer_name_first=COMPOSER_NAME_FIRST, composer_name_last=COMPOSER_NAME_LAST, measures=[m1, m2])
         self.assertEqual(s.url(urlencode=False),
-                         'irealbook://A Test Song=Jackson Arthur Two-Sheds=Medium Swing=C=n=[T44C   |G   Z')
+                         'irealbook://A Test Song=Jackson Arthur "Two-Sheds"=Medium Swing=C=n=[T44C   |G   Z')
         m3 = Measure(chords='A', barline_open='{', time_sig=TimeSignature(3, 4))
         m4 = Measure(chords='D', barline_close='}', time_sig=TimeSignature(3, 4))
-        s2 = Song(title=TITLE,  composer=COMPOSER, measures=[m3, m4])
+        s2 = Song(title=TITLE, composer_name_first=COMPOSER_NAME_FIRST, composer_name_last=COMPOSER_NAME_LAST, measures=[m3, m4])
 
         self.assertEqual(s2.url(urlencode=False),
-                         'irealbook://A Test Song=Jackson Arthur Two-Sheds=Medium Swing=C=n={T34A  |D  }')
+                         'irealbook://A Test Song=Jackson Arthur "Two-Sheds"=Medium Swing=C=n={T34A  |D  }')
 
     # TODO: test expected song URL
 
