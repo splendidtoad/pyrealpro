@@ -109,6 +109,8 @@ class Song:
 
         if 'measures' in kwargs:
             self.measures = kwargs['measures']
+        else:
+            self.measures = []
 
     def url(self, urlencode=True):
         """
