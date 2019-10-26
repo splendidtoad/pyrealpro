@@ -162,9 +162,9 @@ class TestMeasures(unittest.TestCase):
         m4 = Measure(chords='C', barline_close='Z')
         self.assertEqual(m4.__str__(), 'C   Z')
 
-    def test_repeats(self):
+    def test_ending(self):
         """
-        Test output of repeats
+        Test output of `ending` property
         """
         m = Measure(chords='C', ending='N1', barline_close='}')
         self.assertEqual(m.__str__(), 'N1C   }')
