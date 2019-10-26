@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyrealpro",
-    version="0.1.0",
+    version="0.1.1",
     author="Andy Chase",
     author_email="andychase@gmail.com",
     description="Tools for building iRealPro songs.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/splendidtoad/irealpro",
+    url="https://github.com/splendidtoad/pyrealpro",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
