@@ -1,5 +1,13 @@
 from urllib.parse import quote
 
+"""
+The pyrealpro module provides classes that can be used to build a representation of a song, and render it in the import
+URL format used by the iRealPro app.  It assumes that you have a passing familiarity with the format as documented at
+https://irealpro.com/ireal-pro-file-format/, but hopefully makes it easier to programmatically construct an iRealPro
+song than resorting to brute-force string concatenation.
+"""
+
+
 KEY_SIGNATURES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'A-', 'Bb-', 'B-', 'C-', 'C#-',
                       'D-', 'Eb-', 'E-', 'F-', 'F#-', 'G-', 'G#-']
 
@@ -68,6 +76,14 @@ class Song:
     def __init__(self, **kwargs):
         """
         Initialize a new iRealPro Song object.
+
+        :param title: The title of the song.  Defaults to "Unknown".
+        :param key: The key signature of the song. Should be a value found in KEY_SIGNATURES.
+        :param composer_name_first: The composer's first name. Defaults to "Unknown".
+        :param composer_name_last: The composer's last name.  Defaults to "Unknown".
+        :param style: The song style.  Must be a value found in STYLES_ALL. Defaults to "Medium Swing".
+        :param measures: A list containing one or more Measure objects. If omitted, it will be initialized as an empty
+                         list that can be appended to later.
         """
         # Required properties:
 
@@ -108,6 +124,9 @@ class Song:
 
     @property
     def composer_name(self):
+        """
+        :return: (str) The composer's full name in "Last First" format.
+        """
         if self.composer_name_first == 'Unknown' and self.composer_name_last == 'Unknown':
             return 'Unknown'
         else:
@@ -116,7 +135,11 @@ class Song:
     def url(self, urlencode=True):
         """
         Render Song as an iRealPro data URL.
+
+        :param urlencode: (bool), optional
+                                  Indicates whether or not the result should be URL-encoded.
         """
+
         # If the first measure has no opening barline defined, make it a double barline
         if self.measures[0].barline_open == "":
             self.measures[0].barline_open = "["
@@ -143,7 +166,7 @@ class Song:
 
 
 class Measure:
-    """Represents a single measure."""
+    """Represents a single measure of an iRealPro song."""
 
     BARLINES_OPEN = [
         "[",  # opening double bar line
@@ -190,10 +213,32 @@ class Measure:
                  staff_text="", render_ts=False):
         """
         Initialize an iRealPro measure.
-        :param chords: A string representing a single chord, or a list of chords. If a list is provided, the list
-                       length must match the number of beats indicated by the time signature.
-        :param time_sig: The measure time signature.
+
+        :param chords: Union([str, list]) A string representing a single chord, or a list of chords. If a list is
+                                          provided, the list length must either match the number of beats indicated
+                                          by the time signature, or the number of beats in the time signature must be
+                                          evenly divisible by the number of chords in the list (in which case the chords
+                                          will be evenly spaced to fill the measure.)
+        :param time_sig: (TimeSignature), optional The measure time signature. Defaults to 4/4.
+        :param rehearsal_marks: Union([str, list]) optional
+                                                   A string containing a single rehearsal mark, or a list containing
+                                                   multiple rehearsal marks.  See REHEARSAL_MARKS for possible values.
+        :param barline_open: (str), optional
+                                    A string indicating that this measure has a beginning barline. See BARLINES_OPEN for
+                                    possible values.
+        :param barline_close: (str), optional
+                                     A string indicating that this measure has an ending barline. See BARLINES_CLOSE for
+                                     possible values.
+        :param ending: (str), optional
+                              When building a Song with repeats, indicates that this measure is the beginning of an
+                              alternate ending.  See ENDINGS for possible values.
+        :param staff_text: (str), optional
+                                  A string to be displayed below the measure.
+        :param render_ts: (bool), optional
+                                  Indicates whether the time signature should be included when this measure is output
+                                  as a string. Defaults to False.
         """
+
         if time_sig is None:
             time_sig = TimeSignature(4, 4)
         self.time_sig = time_sig
@@ -256,6 +301,11 @@ class TimeSignature:
     duration = None
 
     def __init__(self, beats=4, duration=4):
+        """
+        Initialize a TimeSignature object.
+        :param beats: (int) The number of beats per measure.
+        :param duration: (int) The duration per beat.
+        """
         if beats:
             self.beats = beats
         if duration:
