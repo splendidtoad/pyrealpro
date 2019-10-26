@@ -56,6 +56,8 @@ STYLES_POP = ["Bluegrass",
               "Soul",
               "Virtual Funk", ]
 
+STYLES_ALL = STYLES_JAZZ + STYLES_LATIN + STYLES_POP
+
 
 class Song:
     """A lightweight class based on the iReal Pro file format described at
@@ -98,7 +100,7 @@ class Song:
             self.composer = "Unknown"
 
         if 'style' in kwargs:
-            if kwargs['style'] in STYLES_JAZZ + STYLES_LATIN + STYLES_POP:
+            if kwargs['style'] in STYLES_ALL:
                 self.style = kwargs['style']
             else:
                 raise ValueError(f"{kwargs['style']} is not a valid iRealPro style.")
