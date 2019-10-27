@@ -1,3 +1,4 @@
 include CHANGELOG.md
 include LICENSE.txt
+include CODE_OF_CONDUCT.md
 recursive-include doc *
