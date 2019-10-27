@@ -155,7 +155,7 @@ class Song:
         else:
             measures_str = ""
 
-        url = f"irealb://{self.title}={self.composer_name}={self.style}={self.key}=n={measures_str}"
+        url = f"irealbook://{self.title}={self.composer_name}={self.style}={self.key}=n={measures_str}"
 
         if urlencode:
             return quote(url, safe=":/=")
