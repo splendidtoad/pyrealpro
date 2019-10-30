@@ -1,6 +1,6 @@
 import unittest
 
-from pyrealpro.pyrealpro import *
+from pyrealpro import *
 
 TITLE = "A Test Song"
 COMPOSER_NAME_FIRST = 'Arthur "Two-Sheds"'

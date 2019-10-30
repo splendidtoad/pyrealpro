@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module pyrealpro.pyrealpro</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="pyrealpro.html"><font color="#ffffff">pyrealpro</font></a>.pyrealpro</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/andy/Projects/pyrealpro/pyrealpro/pyrealpro.py">/home/andy/Projects/pyrealpro/pyrealpro/pyrealpro.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="pyrealpro.pyrealpro.html#Measure">Measure</a>
+</font></dt><dt><font face="helvetica, arial"><a href="pyrealpro.pyrealpro.html#Song">Song</a>
+</font></dt><dt><font face="helvetica, arial"><a href="pyrealpro.pyrealpro.html#TimeSignature">TimeSignature</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Measure">class <strong>Measure</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Measure">Measure</a>(chords,&nbsp;time_sig=None,&nbsp;rehearsal_marks=[],&nbsp;barline_open='',&nbsp;barline_close=None,&nbsp;ending='',&nbsp;staff_text='',&nbsp;render_ts=False)<br>
+&nbsp;<br>
+Represents&nbsp;a&nbsp;single&nbsp;measure&nbsp;of&nbsp;an&nbsp;iRealPro&nbsp;song.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Measure-__init__"><strong>__init__</strong></a>(self, chords, time_sig=None, rehearsal_marks=[], barline_open='', barline_close=None, ending='', staff_text='', render_ts=False)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#Measure">Measure</a>&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+:param&nbsp;chords:&nbsp;Union([str,&nbsp;list])&nbsp;A&nbsp;string&nbsp;representing&nbsp;a&nbsp;single&nbsp;chord,&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;chords.&nbsp;If&nbsp;a&nbsp;list&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;provided,&nbsp;the&nbsp;list&nbsp;length&nbsp;must&nbsp;either&nbsp;match&nbsp;the&nbsp;number&nbsp;of&nbsp;beats&nbsp;indicated<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by&nbsp;the&nbsp;time&nbsp;signature,&nbsp;or&nbsp;the&nbsp;number&nbsp;of&nbsp;beats&nbsp;in&nbsp;the&nbsp;time&nbsp;signature&nbsp;must&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;evenly&nbsp;divisible&nbsp;by&nbsp;the&nbsp;number&nbsp;of&nbsp;chords&nbsp;in&nbsp;the&nbsp;list&nbsp;(in&nbsp;which&nbsp;case&nbsp;the&nbsp;chords<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;evenly&nbsp;spaced&nbsp;to&nbsp;fill&nbsp;the&nbsp;measure.)<br>
+:param&nbsp;time_sig:&nbsp;(<a href="#TimeSignature">TimeSignature</a>),&nbsp;optional&nbsp;The&nbsp;measure&nbsp;time&nbsp;signature.&nbsp;Defaults&nbsp;to&nbsp;4/4.<br>
+:param&nbsp;rehearsal_marks:&nbsp;Union([str,&nbsp;list])&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;string&nbsp;containing&nbsp;a&nbsp;single&nbsp;rehearsal&nbsp;mark,&nbsp;or&nbsp;a&nbsp;list&nbsp;containing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;multiple&nbsp;rehearsal&nbsp;marks.&nbsp;&nbsp;See&nbsp;REHEARSAL_MARKS&nbsp;for&nbsp;possible&nbsp;values.<br>
+:param&nbsp;barline_open:&nbsp;(str),&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;string&nbsp;indicating&nbsp;that&nbsp;this&nbsp;measure&nbsp;has&nbsp;a&nbsp;beginning&nbsp;barline.&nbsp;See&nbsp;BARLINES_OPEN&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;possible&nbsp;values.<br>
+:param&nbsp;barline_close:&nbsp;(str),&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;string&nbsp;indicating&nbsp;that&nbsp;this&nbsp;measure&nbsp;has&nbsp;an&nbsp;ending&nbsp;barline.&nbsp;See&nbsp;BARLINES_CLOSE&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;possible&nbsp;values.<br>
+:param&nbsp;ending:&nbsp;(str),&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;building&nbsp;a&nbsp;<a href="#Song">Song</a>&nbsp;with&nbsp;repeats,&nbsp;indicates&nbsp;that&nbsp;this&nbsp;measure&nbsp;is&nbsp;the&nbsp;beginning&nbsp;of&nbsp;an<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alternate&nbsp;ending.&nbsp;&nbsp;See&nbsp;ENDINGS&nbsp;for&nbsp;possible&nbsp;values.<br>
+:param&nbsp;staff_text:&nbsp;(str),&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;string&nbsp;to&nbsp;be&nbsp;displayed&nbsp;below&nbsp;the&nbsp;measure.<br>
+:param&nbsp;render_ts:&nbsp;(bool),&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Indicates&nbsp;whether&nbsp;the&nbsp;time&nbsp;signature&nbsp;should&nbsp;be&nbsp;included&nbsp;when&nbsp;this&nbsp;measure&nbsp;is&nbsp;output<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;a&nbsp;string.&nbsp;Defaults&nbsp;to&nbsp;False.</tt></dd></dl>
+
+<dl><dt><a name="Measure-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>BARLINES_CLOSE</strong> = ['|', ']', '}', 'Z']</dl>
+
+<dl><dt><strong>BARLINES_OPEN</strong> = ['[', '{']</dl>
+
+<dl><dt><strong>ENDINGS</strong> = ['N1', 'N2', 'N3', 'N0']</dl>
+
+<dl><dt><strong>REHEARSAL_MARKS</strong> = ['*A', '*B', '*C', '*D', '*V', '*i', 'S', 'Q', 'f']</dl>
+
+<dl><dt><strong>barline_close</strong> = None</dl>
+
+<dl><dt><strong>barline_open</strong> = None</dl>
+
+<dl><dt><strong>chords</strong> = None</dl>
+
+<dl><dt><strong>ending</strong> = None</dl>
+
+<dl><dt><strong>rehearsal_marks</strong> = None</dl>
+
+<dl><dt><strong>render_ts</strong> = False</dl>
+
+<dl><dt><strong>staff_text</strong> = None</dl>
+
+<dl><dt><strong>time_sig</strong> = None</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Song">class <strong>Song</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Song">Song</a>(**kwargs)<br>
+&nbsp;<br>
+A&nbsp;class&nbsp;for&nbsp;building&nbsp;fake-book&nbsp;style&nbsp;chord&nbsp;charts&nbsp;that&nbsp;can&nbsp;be&nbsp;imported&nbsp;into&nbsp;iRealPro.&nbsp;Implements&nbsp;the&nbsp;iRealPro<br>
+data&nbsp;format&nbsp;as&nbsp;described&nbsp;at&nbsp;https://irealpro.com/ireal-pro-file-format/.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Song-__init__"><strong>__init__</strong></a>(self, **kwargs)</dt><dd><tt>Initializes&nbsp;a&nbsp;new&nbsp;<a href="#Song">Song</a>&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+:param&nbsp;title:&nbsp;(str)&nbsp;The&nbsp;title&nbsp;of&nbsp;the&nbsp;song.&nbsp;&nbsp;Defaults&nbsp;to&nbsp;"Unknown".<br>
+:param&nbsp;key:&nbsp;(str)&nbsp;The&nbsp;key&nbsp;signature&nbsp;of&nbsp;the&nbsp;song.&nbsp;Should&nbsp;be&nbsp;a&nbsp;value&nbsp;found&nbsp;in&nbsp;KEY_SIGNATURES.<br>
+:param&nbsp;composer_name_first:&nbsp;(str)&nbsp;The&nbsp;composer's&nbsp;first&nbsp;name.&nbsp;Defaults&nbsp;to&nbsp;"Unknown".<br>
+:param&nbsp;composer_name_last:&nbsp;(str)&nbsp;The&nbsp;composer's&nbsp;last&nbsp;name.&nbsp;&nbsp;Defaults&nbsp;to&nbsp;"Unknown".<br>
+:param&nbsp;style:&nbsp;(str)&nbsp;The&nbsp;song&nbsp;style.&nbsp;Must&nbsp;be&nbsp;a&nbsp;value&nbsp;found&nbsp;in&nbsp;STYLES_ALL.&nbsp;Defaults&nbsp;to&nbsp;"Medium&nbsp;Swing".<br>
+:param&nbsp;measures:&nbsp;(list)&nbsp;A&nbsp;list&nbsp;containing&nbsp;one&nbsp;or&nbsp;more&nbsp;<a href="#Measure">Measure</a>&nbsp;objects.&nbsp;If&nbsp;omitted,&nbsp;it&nbsp;will&nbsp;be&nbsp;initialized&nbsp;as&nbsp;an&nbsp;empty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;that&nbsp;can&nbsp;be&nbsp;appended&nbsp;to&nbsp;later.</tt></dd></dl>
+
+<dl><dt><a name="Song-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<dl><dt><a name="Song-url"><strong>url</strong></a>(self, urlencode=True)</dt><dd><tt>Renders&nbsp;<a href="#Song">Song</a>&nbsp;as&nbsp;an&nbsp;iRealPro&nbsp;data&nbsp;URL.<br>
+&nbsp;<br>
+:param&nbsp;urlencode:&nbsp;(bool),&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Indicates&nbsp;whether&nbsp;or&nbsp;not&nbsp;the&nbsp;result&nbsp;should&nbsp;be&nbsp;URL-encoded.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>composer_name</strong></dt>
+<dd><tt>:return:&nbsp;(str)&nbsp;The&nbsp;composer's&nbsp;full&nbsp;name&nbsp;in&nbsp;"Last&nbsp;First"&nbsp;format.</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>measures</strong> = None</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="TimeSignature">class <strong>TimeSignature</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#TimeSignature">TimeSignature</a>(beats=4,&nbsp;duration=4)<br>
+&nbsp;<br>
+Represents&nbsp;a&nbsp;musical&nbsp;time&nbsp;signature.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="TimeSignature-__init__"><strong>__init__</strong></a>(self, beats=4, duration=4)</dt><dd><tt>Initializes&nbsp;a&nbsp;<a href="#TimeSignature">TimeSignature</a>&nbsp;<a href="builtins.html#object">object</a>.<br>
+&nbsp;<br>
+:param&nbsp;beats:&nbsp;(int)&nbsp;The&nbsp;number&nbsp;of&nbsp;beats&nbsp;per&nbsp;measure.<br>
+:param&nbsp;duration:&nbsp;(int)&nbsp;The&nbsp;duration&nbsp;per&nbsp;beat.</tt></dd></dl>
+
+<dl><dt><a name="TimeSignature-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>VALID_TIME_SIGNATURES</strong> = ['T44', 'T34', 'T24', 'T54', 'T64', 'T74', 'T22', 'T32', 'T58', 'T68', 'T78', 'T98', 'T12']</dl>
+
+<dl><dt><strong>beats</strong> = None</dl>
+
+<dl><dt><strong>duration</strong> = None</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>KEY_SIGNATURES</strong> = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'A-', 'Bb-', 'B-', 'C-', 'C#-', 'D-', 'Eb-', 'E-', ...]<br>
+<strong>STYLES_ALL</strong> = ['Afro 12/8', 'Ballad Double Time Feel', 'Ballad Even', 'Ballad Melodic', 'Ballad Swing', 'Blue Note', 'Bossa Nova', 'Doo Doo Cats', 'Double Time Swing', 'Even 8ths', 'Even 8ths Open', 'Even 16ths', 'Guitar Trio', 'Gypsy Jazz', 'Latin', 'Latin/Swing', 'Long Notes', 'Medium Swing', 'Medium Up Swing', 'Medium Up Swing 2', ...]<br>
+<strong>STYLES_JAZZ</strong> = ['Afro 12/8', 'Ballad Double Time Feel', 'Ballad Even', 'Ballad Melodic', 'Ballad Swing', 'Blue Note', 'Bossa Nova', 'Doo Doo Cats', 'Double Time Swing', 'Even 8ths', 'Even 8ths Open', 'Even 16ths', 'Guitar Trio', 'Gypsy Jazz', 'Latin', 'Latin/Swing', 'Long Notes', 'Medium Swing', 'Medium Up Swing', 'Medium Up Swing 2', ...]<br>
+<strong>STYLES_LATIN</strong> = ['Argentina: Tango', 'Brazil: Bossa Acoustic', 'Brazil: Bossa Electric', 'Brazil: Samba', 'Cuba: Bolero', 'Cuba: Cha Cha Cha', 'Cuba: Son Montuno 2-3', 'Cuba: Son Montuno 3-2']<br>
+<strong>STYLES_POP</strong> = ['Bluegrass', 'Country', 'Disco', 'Funk', 'Glam Funk', 'House', 'Reggae', 'Rock', 'Rock 12/8', 'RnB', 'Shuffle', 'Slow Rock', 'Smooth', 'Soul', 'Virtual Funk']</td></tr></table>
+</body></html>
