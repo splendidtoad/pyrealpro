@@ -19,7 +19,7 @@ used by the `Song` class to generate an iRealPro URL.
 ## Example
 
 ```
-from pyrealpro.pyrealpro import Song, Measure, TimeSignature
+from pyrealpro import Song, Measure, TimeSignature
 
 s = Song(title="Automation Blues", composer="pyrealpro", key='G', style='New Orleans Swing',
                  composer_name_first="Otto",
