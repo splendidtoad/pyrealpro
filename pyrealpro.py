@@ -140,20 +140,19 @@ class Song:
         :param urlencode: (bool), optional
                                   Indicates whether or not the result should be URL-encoded.
         """
-
+        # Import crashes without at least one measure
+        if len(self.measures) == 0:
+            self.measures.append(Measure(" "))
+        # If this song has any measures defined, force the first one to render its time signature
+        self.measures[0].render_ts = True
         # If the first measure has no opening barline defined, make it a double barline
         if self.measures[0].barline_open == "":
             self.measures[0].barline_open = "["
         # If the last measure has no barline or the default barline, make it a final double barline
         if self.measures[-1].barline_close in ["", "|", None]:
             self.measures[-1].barline_close = "Z"
-        # If this song has any measures defined, force the first one to render its time signature
-        if len(self.measures) > 0:
-            self.measures[0].render_ts = True
-        if self.measures is not None:
-            measures_str = "".join(m.__str__() for m in self.measures)
-        else:
-            measures_str = ""
+
+        measures_str = "".join(m.__str__() for m in self.measures)
 
         url = f"irealbook://{self.title}={self.composer_name}={self.style}={self.key}=n={measures_str}"
 

@@ -63,7 +63,13 @@ class TestSongs(unittest.TestCase):
         self.assertEqual(s2.url(urlencode=False),
                          'irealbook://A Test Song=Jackson Arthur "Two-Sheds"=Medium Swing=C=n={T34A  |D  }')
 
-    # TODO: test expected song URL
+    def test_empty_measures(self):
+        """
+        Tests expected output of a Song object with no measures
+        """
+        s = Song(title=TITLE, composer_name_first=COMPOSER_NAME_FIRST, composer_name_last=COMPOSER_NAME_LAST)
+        self.assertEqual(s.url(), "irealbook://A%20Test%20Song=Jackson%20Arthur%20%22Two-Sheds%22=Medium%20Swing=C=n=%5BT44%20%20%20%20Z")
+        self.assertEqual(s.url(urlencode=False), "irealbook://A Test Song=Jackson Arthur \"Two-Sheds\"=Medium Swing=C=n=[T44    Z")
 
 
 class TestMeasures(unittest.TestCase):
