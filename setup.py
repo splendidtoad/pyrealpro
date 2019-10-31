@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyrealpro",
-    version="0.1.2",
+    version="0.1.3",
     author="Andy Chase",
     author_email="andychase@gmail.com",
     description="Tools for building iRealPro songs.",
