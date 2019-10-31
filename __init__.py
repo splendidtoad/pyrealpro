@@ -1,1 +1,1 @@
-name = "pyrealpro"
+from .pyrealpro import *
