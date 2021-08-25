@@ -279,7 +279,10 @@ class Measure:
             raise ValueError("Found one or more unrecognized rehearsal marks.")
 
     def __str__(self):
-        chords_str = "".join(self.chords)
+        chords_sep = ""
+        if len(self.chords) > 1:
+            chords_sep = ","
+        chords_str = chords_sep.join(self.chords)
         if self.render_ts:
             ts = self.time_sig
         else:
