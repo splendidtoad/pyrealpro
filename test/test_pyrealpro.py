@@ -55,21 +55,21 @@ class TestSongs(unittest.TestCase):
         m2 = Measure(chords='G')
         s = Song(title=TITLE, composer_name_first=COMPOSER_NAME_FIRST, composer_name_last=COMPOSER_NAME_LAST, measures=[m1, m2])
         self.assertEqual(s.url(urlencode=False),
-                         'irealbook://A Test Song=Jackson Arthur "Two-Sheds"=Medium Swing=C=n=[T44C   |G   Z')
+                         'irealbook://A Test Song=Jackson Arthur "Two-Sheds"=Medium Swing=C=n=[T44C, , , |G, , , Z')
         m3 = Measure(chords='A', barline_open='{', time_sig=TimeSignature(3, 4))
         m4 = Measure(chords='D', barline_close='}', time_sig=TimeSignature(3, 4))
         s2 = Song(title=TITLE, composer_name_first=COMPOSER_NAME_FIRST, composer_name_last=COMPOSER_NAME_LAST, measures=[m3, m4])
 
         self.assertEqual(s2.url(urlencode=False),
-                         'irealbook://A Test Song=Jackson Arthur "Two-Sheds"=Medium Swing=C=n={T34A  |D  }')
+                         'irealbook://A Test Song=Jackson Arthur "Two-Sheds"=Medium Swing=C=n={T34A, , |D, , }')
 
     def test_empty_measures(self):
         """
         Tests expected output of a Song object with no measures
         """
         s = Song(title=TITLE, composer_name_first=COMPOSER_NAME_FIRST, composer_name_last=COMPOSER_NAME_LAST)
-        self.assertEqual(s.url(), "irealbook://A%20Test%20Song=Jackson%20Arthur%20%22Two-Sheds%22=Medium%20Swing=C=n=%5BT44%20%20%20%20Z")
-        self.assertEqual(s.url(urlencode=False), "irealbook://A Test Song=Jackson Arthur \"Two-Sheds\"=Medium Swing=C=n=[T44    Z")
+        self.assertEqual(s.url(), "irealbook://A%20Test%20Song=Jackson%20Arthur%20%22Two-Sheds%22=Medium%20Swing=C=n=%5BT44%20%2C%20%2C%20%2C%20Z")
+        self.assertEqual(s.url(urlencode=False), 'irealbook://A Test Song=Jackson Arthur "Two-Sheds"=Medium Swing=C=n=[T44 , , , Z')
 
 
 class TestMeasures(unittest.TestCase):
@@ -106,7 +106,7 @@ class TestMeasures(unittest.TestCase):
         """
         # TODO test multiple time signatures
         m = Measure(chords='C', time_sig=TimeSignature(5, 4))
-        expected_measure_string = 'C    |'
+        expected_measure_string = 'C, , , , |'
         self.assertEqual(m.__str__(), expected_measure_string)
 
     def test_measure_string_from_chords_list(self):
@@ -114,7 +114,7 @@ class TestMeasures(unittest.TestCase):
         Test that Measure.__str__() returns the expected value when chords are provided as a list.
         """
         m = Measure(chords=['C', None, 'G7', None], time_sig=TimeSignature(4, 4))
-        expected_measure_string = 'C G7 |'
+        expected_measure_string = 'C, ,G7, |'
         self.assertEqual(m.__str__(), expected_measure_string)
 
     def test_modulo_chord_padding(self):
@@ -124,68 +124,68 @@ class TestMeasures(unittest.TestCase):
         """
         chords = ['C', 'F']
         m = Measure(chords=chords, time_sig=TimeSignature(4, 4))
-        self.assertEqual(m.__str__(), 'C F |')
+        self.assertEqual(m.__str__(), 'C, ,F, |')
         m = Measure(chords=chords, time_sig=TimeSignature(6, 4))
-        self.assertEqual(m.__str__(), 'C  F  |')
+        self.assertEqual(m.__str__(), 'C, , ,F, , |')
         m = Measure(chords=['C', 'F', 'G'], time_sig=TimeSignature(6, 4))
-        self.assertEqual(m.__str__(), 'C F G |')
+        self.assertEqual(m.__str__(), 'C, ,F, ,G, |')
 
     def test_staff_text(self):
         """
         Test that staff text is formatted correctly and in the expected position
         """
         m = Measure(chords='C', time_sig=TimeSignature(4, 4), staff_text="Test")
-        self.assertEqual(m.__str__(), '<Test>C   |')
+        self.assertEqual(m.__str__(), '<Test>C, , , |')
         m = Measure(chords=['C', 'F'], time_sig=TimeSignature(4, 4), staff_text='Test',
                               barline_open='{', barline_close='}')
-        self.assertEqual(m.__str__(), '{<Test>C F }')
+        self.assertEqual(m.__str__(), '{<Test>C, ,F, }')
         m.render_ts = True
-        self.assertEqual(m.__str__(), '{T44<Test>C F }')
+        self.assertEqual(m.__str__(), '{T44<Test>C, ,F, }')
 
     def test_barline_open(self):
         """
         Test opening barline options
         """
         m = Measure(chords='C', barline_open="")
-        self.assertEqual(m.__str__(), 'C   |')
+        self.assertEqual(m.__str__(), 'C, , , |')
         m2 = Measure(chords='C', barline_open='[')
-        self.assertEqual(m2.__str__(), '[C   |')
+        self.assertEqual(m2.__str__(), '[C, , , |')
         m3 = Measure(chords='C', barline_open='{')
         m3.render_ts = True
-        self.assertEqual(m3.__str__(), '{T44C   |')
+        self.assertEqual(m3.__str__(), '{T44C, , , |')
 
     def test_barline_close(self):
         """
         Test closing barline options
         """
         m = Measure(chords='C', barline_close=None)
-        self.assertEqual(m.__str__(), 'C   |')
+        self.assertEqual(m.__str__(), 'C, , , |')
         m = Measure(chords='C', barline_close='')
-        self.assertEqual(m.__str__(), 'C   |')
+        self.assertEqual(m.__str__(), 'C, , , |')
         m2 = Measure(chords='C', barline_close=']')
-        self.assertEqual(m2.__str__(), 'C   ]')
+        self.assertEqual(m2.__str__(), 'C, , , ]')
         m3 = Measure(chords='C', barline_close='}')
-        self.assertEqual(m3.__str__(), 'C   }')
+        self.assertEqual(m3.__str__(), 'C, , , }')
         m4 = Measure(chords='C', barline_close='Z')
-        self.assertEqual(m4.__str__(), 'C   Z')
+        self.assertEqual(m4.__str__(), 'C, , , Z')
 
     def test_ending(self):
         """
         Test output of `ending` property
         """
         m = Measure(chords='C', ending='N1', barline_close='}')
-        self.assertEqual(m.__str__(), 'N1C   }')
+        self.assertEqual(m.__str__(), 'N1C, , , }')
         m1 = Measure(chords=['C', 'G7'], ending="N2", barline_close='}', render_ts=True)
-        self.assertEqual(m1.__str__(), 'T44N2C G7 }')
+        self.assertEqual(m1.__str__(), 'T44N2C, ,G7, }')
 
     def test_rehearsal_marks(self):
         """
         Test behavior of the rehearsal_marks property
         """
         m = Measure(chords='C', rehearsal_marks="*A", barline_open="[", render_ts=True)
-        self.assertEqual(m.__str__(), '*A[T44C   |')
+        self.assertEqual(m.__str__(), '*A[T44C, , , |')
         m1 = Measure(chords=['G', 'C7'], rehearsal_marks=['*B', 'Q'])
-        self.assertEqual(m1.__str__(), '*BG C7 Q|')
+        self.assertEqual(m1.__str__(), '*BG, ,C7, Q|')
         with self.assertRaises(ValueError):
             Measure(chords='G', rehearsal_marks=['M'])
 
@@ -248,9 +248,10 @@ class TestFullSong(unittest.TestCase):
 
         s.measures.append(Measure(chords='G7', ending='N2'))
         s.measures.append(Measure(chords='G7', barline_close='Z'))
-
-        self.assertEqual(s.url(), "irealbook://Automation%20Blues=Matonne%20Otto=New%20Orleans%20Swing=G=n=%7BT44%3CGenerated%20by%20pyrealpro%3EG7%20%20%20%7CG7%20%20%20%7CG7%20%20%20%7CG7%20%20%20%5D%5BC7%20%20%20%7CC7%20%20%20%7CG7%20%20%20%7CG7%20%20%20%5D%5BD7%20%20%20%7CC7%20%20%20%7CN1G7%20%20%20%7CD7%20%20%20%7DN2G7%20%20%20%7CG7%20%20%20Z")
-        self.assertEqual(s.url(urlencode=False), "irealbook://Automation Blues=Matonne Otto=New Orleans Swing=G=n={T44<Generated by pyrealpro>G7   |G7   |G7   |G7   ][C7   |C7   |G7   |G7   ][D7   |C7   |N1G7   |D7   }N2G7   |G7   Z")
+        print(s.url())
+        print(s.url(urlencode=False))
+        self.assertEqual(s.url(), "irealbook://Automation%20Blues=Matonne%20Otto=New%20Orleans%20Swing=G=n=%7BT44%3CGenerated%20by%20pyrealpro%3EG7%2C%20%2C%20%2C%20%7CG7%2C%20%2C%20%2C%20%7CG7%2C%20%2C%20%2C%20%7CG7%2C%20%2C%20%2C%20%5D%5BC7%2C%20%2C%20%2C%20%7CC7%2C%20%2C%20%2C%20%7CG7%2C%20%2C%20%2C%20%7CG7%2C%20%2C%20%2C%20%5D%5BD7%2C%20%2C%20%2C%20%7CC7%2C%20%2C%20%2C%20%7CN1G7%2C%20%2C%20%2C%20%7CD7%2C%20%2C%20%2C%20%7DN2G7%2C%20%2C%20%2C%20%7CG7%2C%20%2C%20%2C%20Z")
+        self.assertEqual(s.url(urlencode=False), "irealbook://Automation Blues=Matonne Otto=New Orleans Swing=G=n={T44<Generated by pyrealpro>G7, , , |G7, , , |G7, , , |G7, , , ][C7, , , |C7, , , |G7, , , |G7, , , ][D7, , , |C7, , , |N1G7, , , |D7, , , }N2G7, , , |G7, , , Z")
 
 
 if __name__ == '__main__':
