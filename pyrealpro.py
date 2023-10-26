@@ -261,7 +261,7 @@ class Measure:
         elif len(chords) == self.time_sig.beats:
             # Replace any instances of `None` with spaces
             self.chords = [' ' if c is None else c for c in chords]
-        elif self.time_sig.beats % len(chords) == 0:
+        elif self.time_sig.beats % len([c for c in chords if c not in ['s', 'l']]) == 0:
             # If beats modulo chords length is zero, then spread them out evenly to fill the measure
             pad = int((self.time_sig.beats - len(chords)) / len(chords))
             self.chords = []
